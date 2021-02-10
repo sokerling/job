@@ -1,0 +1,15 @@
+def not_bad(a, shift=0):
+    word1 = []
+    b = a.split()
+    for i in words:
+        for j in b:
+            if len(i) > int(j):
+                с = i.replace(i[int(j)], '')
+                print(с)
+                word1.append(с)
+    print(word1)
+
+
+words = ['agetg', 'wridt', 'hof', 'VwitCchcraft']
+not_bad('0 4 13')
+print(words)
