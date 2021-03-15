@@ -1,0 +1,17 @@
+from PIL import Image, ImageDraw
+
+
+def pumpkin(filename, w, colour1, colour2, colour3):
+    im = Image.new("RGB", (w * 8, w * 5.5), (255, 255, 255))
+    drawer = ImageDraw.Draw(im)
+    drawer.ellipse((0, 0.5 * w), (3 * w, 5.5 * w), colour1)
+    drawer.ellipse((1.5 * w, 0.5 * w), (4 * w, 5.5 * w), colour1)
+    drawer.ellipse((3 * w, 0.5 * w), (5 * w, 5.5 * w), colour1)
+    drawer.ellipse((4 * w, 0.5 * w), (6.5 * w, 5.5 * w), colour1)
+    drawer.ellipse((5 * w, 0.5 * w), (8 * w, 5.5 * w), colour1)
+    drawer.ellipse((1.5 * w, 0), (3 * w, 0.5 * w), colour3)
+    drawer.rectangle(((4 * w) - 1, 0), ((4 * w) + 1, 0.5 * w), colour2)
+    im.save(filename)
+
+
+pumpkin('img.png', 40, '#FC0', '#872C17', '#219129') 
