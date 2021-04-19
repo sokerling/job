@@ -1,0 +1,11 @@
+import sys
+data = list(map(str.strip, sys.stdin))
+print(data)
+for j in data:
+    total = 0
+    spsk = []
+    for i in j.split(' '):
+        total += 1
+        if len(j.split(' ')[0]) < len(i) and len(j.split(' ')[-1]) >= len(i):
+            spsk.append(i)
+    print(' & '.join(spsk))
