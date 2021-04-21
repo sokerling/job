@@ -2,7 +2,7 @@ from PIL import Image, ImageDraw
 
 
 def careful_flight(name, savename):
-    image = Image.open('test.png')
+    image = Image.open(name)
     draw = ImageDraw.Draw(image)
     width = image.size[0]
     height = image.size[1]
@@ -15,4 +15,4 @@ def careful_flight(name, savename):
             sr = (r + g + b) // 3
             draw.point((x, y), (sr, sr, sr))
     im = image.transpose(Image.FLIP_TOP_BOTTOM)
-    im.save('test2.png')
+    im.save(savename)
