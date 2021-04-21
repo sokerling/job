@@ -24,33 +24,33 @@ class Carpet:
         return separator.join(self.colors.split(' '))
 
     def __str__(self):
-        return 'Carpet of size {}, rate {} and colors: {}'.format(self.size, self.maxspeed,\
+        return 'Carpet of size {}, rate {} and colors: {}'.format(self.size, self.maxspeed, \
                                                                   ', '.join(self.colors.split(' ')))
 
     def __lt__(self, other):
-        tup_self = (self.max_speed, self.size, len(self.colors.split()), self.colors)
-        tup_other = (other.max_speed, other.size, len(other.colors.split()), other.colors)
+        tup_self = (self.maxspeed, self.size, len(self.colors.split()), self.colors)
+        tup_other = (other.maxspeed, other.size, len(other.colors.split()), other.colors)
         return tup_self < tup_other
 
     def __le__(self, other):
-        tup_self = (self.max_speed, self.size, len(self.colors.split()), self.colors)
-        tup_other = (other.max_speed, other.size, len(other.colors.split()), other.colors)
+        tup_self = (self.maxspeed, self.size, len(self.colors.split()), self.colors)
+        tup_other = (other.maxspeed, other.size, len(other.colors.split()), other.colors)
         return tup_self <= tup_other
 
     def __eq__(self, other):
-        tup_self = (self.max_speed, self.size, len(self.colors.split()), self.colors)
-        tup_other = (other.max_speed, other.size, len(other.colors.split()), other.colors)
+        tup_self = (self.maxspeed, self.size, len(self.colors.split()), self.colors)
+        tup_other = (other.maxspeed, other.size, len(other.colors.split()), other.colors)
         return tup_self == tup_other
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
     def __gt__(self, other):
-        tup_self = (self.max_speed, self.size, len(self.colors.split()), self.colors)
-        tup_other = (other.max_speed, other.size, len(other.colors.split()), other.colors)
+        tup_self = (self.maxspeed, self.size, len(self.colors.split()), self.colors)
+        tup_other = (other.maxspeed, other.size, len(other.colors.split()), other.colors)
         return tup_self > tup_other
 
     def __ge__(self, other):
-        tup_self = (self.max_speed, self.size, len(self.colors.split()), self.colors)
-        tup_other = (other.max_speed, other.size, len(other.colors.split()), other.colors)
+        tup_self = (self.maxspeed, self.size, len(self.colors.split()), self.colors)
+        tup_other = (other.maxspeed, other.size, len(other.colors.split()), other.colors)
         return tup_self >= tup_other
