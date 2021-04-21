@@ -2,7 +2,7 @@ import sys
 data = list(map(str.strip, sys.stdin))
 for j in data:
     spsk = []
-    for i in j.split(' ')[1:-2:]:
+    for i in j.split(' ')[1:-1:]:
         if j.split(' ')[0] < i and len(j.split(' ')[-1]) >= len(i):
             spsk.append(i)
     print(' & '.join(spsk))
