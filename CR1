@@ -1,6 +1,5 @@
 import sys
 data = list(map(str.strip, sys.stdin))
-print(data)
 for j in data:
     spsk = []
     for i in j.split(' ')[1:-2:]:
