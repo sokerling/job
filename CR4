@@ -1,56 +1,33 @@
-class Carpet:
-    def __init__(self, size, maxspeed, colors):
-        self.size = size
-        self.maxspeed = maxspeed
-        self.colors = colors
+import sys
 
-    def change_size(self, value):
-        if value + self.size < 5:
-            self.size = 5
-        elif value + self.size > 100:
-            self.size = 100
-        else:
-            self.size += value
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
+from PyQt5.QtWidgets import QLabel, QLineEdit
 
-    def __ifloordiv__(self, num):
-        if self.size // num < 5:
-            self.size = 5
-        elif self.size // num >= 5:
-            self.size //= num
-        self.maxspeed //= 2
-        return self
 
-    def __call__(self, separator):
-        return separator.join(self.colors.split(' '))
+class Example(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
 
-    def __str__(self):
-        return 'Carpet of size {}, rate {} and colors: {}'.format(self.size, self.maxspeed, \
-                                                                  ', '.join(self.colors.split(' ')))
+    def initUI(self):
+        self.setGeometry(300, 300, 500, 500)
+        self.setWindowTitle('Тест')
 
-    def __lt__(self, other):
-        tup_self = (self.maxspeed, self.size, len(self.colors.split()), self.colors)
-        tup_other = (other.maxspeed, other.size, len(other.colors.split()), other.colors)
-        return tup_self < tup_other
+        self.btn = QPushButton('Да', self)
+        self.btn.resize(200, 200)
+        self.btn.move(150, 150)
+        self.btn.clicked.connect(self.click)
 
-    def __le__(self, other):
-        tup_self = (self.maxspeed, self.size, len(self.colors.split()), self.colors)
-        tup_other = (other.maxspeed, other.size, len(other.colors.split()), other.colors)
-        return tup_self <= tup_other
+        self.label = QLabel(self)
+        self.label.setText("Вы Айк?")
+        self.label.move(225, 100)
 
-    def __eq__(self, other):
-        tup_self = (self.maxspeed, self.size, len(self.colors.split()), self.colors)
-        tup_other = (other.maxspeed, other.size, len(other.colors.split()), other.colors)
-        return tup_self == tup_other
+    def click(self):
+        self.btn.setText(f"ПИЗДА")
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
-    def __gt__(self, other):
-        tup_self = (self.maxspeed, self.size, len(self.colors.split()), self.colors)
-        tup_other = (other.maxspeed, other.size, len(other.colors.split()), other.colors)
-        return tup_self > tup_other
-
-    def __ge__(self, other):
-        tup_self = (self.maxspeed, self.size, len(self.colors.split()), self.colors)
-        tup_other = (other.maxspeed, other.size, len(other.colors.split()), other.colors)
-        return tup_self >= tup_other
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    ex = Example()
+    ex.show()
+    sys.exit(app.exec())
