@@ -1,1 +1,22 @@
+nset = input().split()
+arr = []
+for i in range(10):
+    for j in range(int(nset[i])):
+        arr.append(i)
+arr.reverse()
 
+n = 0
+while len(arr) > 0:
+    if max(arr) != min(arr):
+        if str(n)[-1] != str(arr[0]):
+            n = n * 10 + arr.pop(0)
+        else:
+            for j in range(len(arr)):
+                if str(arr[j]) != str(n)[-1]:
+                    n = n * 10 + arr.pop(j)
+                    break
+    else:
+        if str(n)[-1] != str(arr[0]):
+            n = n * 10 + arr[0]
+        break
+print(n)
