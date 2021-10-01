@@ -1,15 +1,7 @@
-from datetime import date, timedelta
-
-d = [int(i) for i in input().split('.')]
-num = int(input())
-data = date(d[2], d[1], d[0])
-timedelta = timedelta(days=1)
-date1 = data + timedelta * 2
-d_plus_m = int(date1.strftime("%m")) + int(date1.strftime("%d"))
-for i in range(num):
-    while not(d_plus_m % 3 == 0 or d_plus_m % 7 == 0) or date1.weekday() == data.weekday():
-        date1 += timedelta
-        d_plus_m = sum([int(i) for i in date1.strftime("%m")]) + sum([int(i) for i in date1.strftime("%d")])
-    print(date1.strftime('%d' + ' ' + '%b' + ' ' + '%Y'))
-    date1 += (timedelta * 2)
-    d_plus_m = sum([int(i) for i in date1.strftime("%m")]) + sum([int(i) for i in date1.strftime("%d")])
+k, m, kolya, misha = int(input()), int(input()), 0, 0
+for j in range(int(input()), int(input()) + 1):
+    if j % k == 0:
+        kolya += 1
+    if j % m == 0:
+        misha += 1
+print(f'{kolya - misha}')
