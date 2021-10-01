@@ -1,13 +1,1 @@
-from random import sample, randrange
 
-name = input().split()
-sizerange = [int(i) for i in (input().split())]
-maxhorror = float(input())
-n = int(input())
-name = sample(name, k=n)
-
-for i in range(n):
-    size_value = randrange(sizerange[0], sizerange[1] + 1, 3)
-    fear_value = randrange(0, maxhorror * 1000 // 10) / 100
-    total_horror = (size_value * fear_value / 5 * 100) // 10 / 10
-    print(name[i], 'size', size_value , 'fear', fear_value, 'total horror', total_horror)
