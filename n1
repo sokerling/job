@@ -1,14 +1,2 @@
-import sys
-data = list(map(str.strip, sys.stdin))
-total = 0
-spsk = []
-spsk1 = []
-for j in data:
-    spsk1 = []
-    for i in j.split(':'):
-        if len(i) > 1:
-            if i[-1] == i[0]:
-                spsk1.append(i)
-    if len(spsk) < len(spsk1):
-        spsk = spsk1    
-print(' '.join(spsk))
+mika, kira = input().split(' '), input().split(' ')
+print(f'1 {int(mika[0]) + int(mika[1]) * int(mika[-1])}') if int(mika[0]) + int(mika[1]) * int(mika[-1]) <= int(kira[0]) + int(kira[1]) * int(kira[-1]) else print(f'2 {int(kira[0]) + int(kira[1]) * int(kira[-1])}')
