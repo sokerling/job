@@ -1,33 +1,11 @@
-def shif(x, step):
-    if step < 0:
-        step = abs(step)
-        for i in range(step):
-            x.append(x.pop(0))
+total, n, even = 5, int(input()), 6
+if n == 0:
+    print(1)
+    exit(0)
+for j in range(n - 1):
+    if n == 0:
+        pass
     else:
-        for i in range(step):
-            x.insert(0, x.pop())
-    return x
-
-
-
-def not_bad(a,shift=0):
-    global words
-    b = a.split(' ')
-    word1 = []
-    for word in words:
-        for num in b:
-            if len(word)>int(num):
-                word = word[:int(num)]+'-'+word[int(num)+1:]
-        word1.append(word.replace('-',''))
-    words = word1
-    if shift != 0:
-        for j in words:
-            print(shif(list(j), shift))
-            shif(list(j), shift)
-            word1.append(x)
-    return words
-
-
-words = ['agetg', 'wridt', 'hof', 'VwitCchcraft']
-not_bad('0 4 13')
-print(words)
+        total += even
+        even += 2
+print(total)
