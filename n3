@@ -1,22 +1,26 @@
-nset = input().split()
-arr = []
-for i in range(10):
-    for j in range(int(nset[i])):
-        arr.append(i)
-arr.reverse()
-
-n = 0
-while len(arr) > 0:
-    if max(arr) != min(arr):
-        if str(n)[-1] != str(arr[0]):
-            n = n * 10 + arr.pop(0)
-        else:
-            for j in range(len(arr)):
-                if str(arr[j]) != str(n)[-1]:
-                    n = n * 10 + arr.pop(j)
-                    break
-    else:
-        if str(n)[-1] != str(arr[0]):
-            n = n * 10 + arr[0]
-        break
-print(n)
+def strong_sences(*data):
+    for j in data:
+        if len(j) != 3:
+            raise TypeError('Inappropriate number of values')
+        for i in j:
+            if type(i) != int:
+                raise TypeError('Not a number')
+    output, n1, total = [], 0, 0
+    for j in data:
+        for i in j:
+            if i % j[0] == 0 and i % j[1] == 0 and i % j[2] == 0:
+                n1 += 1
+                break
+        if n1 == 1:
+            output.append(j[0] + j[1] + j[2])
+            n1 = 0
+    for i in range(0, len(output)):
+        if len(output) != 1:
+            if output[i] == output[i + 1]:
+                total += 1
+                output.pop(total)
+            if i + 2 >= len(output):
+                break
+    if output == []:
+        raise LookupError('Nothing to return')
+    return sorted(output)
