@@ -1,9 +1,13 @@
+class InappropriateError(Exception):
+    pass
+
+
 def strong_sences(*data):
-    for j in data:
-        if len(j) != 3:
-            raise TypeError('Inappropriate number of values')
-        for i in j:
-            if type(i) != int:
+    for i in data:
+        if len(i) != 3:
+            raise InappropriateError('Inappropriate number of values')
+        for j in i:
+            if type(j) != int:
                 raise TypeError('Not a number')
     output, n1, total = [], 0, 0
     for j in data:
@@ -21,6 +25,7 @@ def strong_sences(*data):
                 output.pop(total)
             if i + 2 >= len(output):
                 break
-    if output == []:
+
+    if output == 0:
         raise LookupError('Nothing to return')
     return sorted(output)
