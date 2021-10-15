@@ -26,6 +26,6 @@ def strong_sences(*data):
             if i + 2 >= len(output):
                 break
 
-    if output == 0:
+    if output == []:
         raise LookupError('Nothing to return')
     return sorted(output)
