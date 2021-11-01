@@ -41,17 +41,26 @@ class MyWidget(QMainWindow):
 
     def file_choose(self):
         # Получаем путь к папке
-        openwindow = QtWidgets.QApplication([])
-        filename = QFileDialog.getOpenFileName(self, 'Выбрать видео', '')[0]
+        filename, filetype = QFileDialog.getOpenFileName(self,
+                                                         "Выбрать файл",
+                                                         ".",
+                                                         "MP4 Files(*.mp4)")
 
         # Создаём переменную с видеофайлом
-        main_vid = VideoFileClip(filename)
+        #main_vid = VideoFileClip(filename)
         print(filename)
-    
+
     @QtCore.pyqtSlot()
     def action_clicked(self):
         if (self.sender()).text() == 'Выход из программы':
             sys.exit(app.exec_())
+
+        elif (self.sender()).text() == 'Сохранить, как...':
+            # Сохраняем конечный видеофайл
+            dirlist = QFileDialog.getExistingDirectory(self, "Выбрать папку", ".")
+
+            #main_vid.write_videofile(input())
+            print(dirlist)
 
 
 if __name__ == '__main__':
@@ -59,8 +68,3 @@ if __name__ == '__main__':
     ex = MyWidget()
     ex.show()
     sys.exit(app.exec_())
-
-
-
-# Сохраняем конечный видеофайл
-#main_vid.write_videofile(input())
