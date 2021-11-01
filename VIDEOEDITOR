@@ -41,6 +41,10 @@ class MyWidget(QMainWindow):
         vid_Rotate.addAction('Поворот на 90 против по часовой', self.action_clicked)
         vid_Rotate.addAction('Поворот на 180 градусов', self.action_clicked)
 
+        vidAdd = vidMenu.addMenu('&Добавить видео')
+        vidAdd.addAction('Перед', self.action_clicked)
+        vidAdd.addAction('После', self.action_clicked)
+
     def file_choose(self):
         global main_vid, filename
         # Получаем путь к папке
@@ -56,6 +60,7 @@ class MyWidget(QMainWindow):
 
     @QtCore.pyqtSlot()
     def action_clicked(self):
+        global main_vid
         if (self.sender()).text() == 'Выход из программы':
             sys.exit(app.exec_())
 
@@ -75,6 +80,24 @@ class MyWidget(QMainWindow):
 
         if (self.sender()).text() == 'Поворот на 180 градусов':
             main_vid.rotate(180)
+
+        if (self.sender()).text() == 'Перед':
+            filename2, filetype = QFileDialog.getOpenFileName(self,
+                                                             "Выбрать файл",
+                                                             ".",
+                                                             "MP4 Files(*.mp4)")
+            clip2 = VideoFileClip(filename2)
+
+            main_vid = concatenate_videoclips([clip2, main_vid])
+
+        if (self.sender()).text() == 'После':
+            filename2, filetype = QFileDialog.getOpenFileName(self,
+                                                             "Выбрать файл",
+                                                             ".",
+                                                             "MP4 Files(*.mp4)")
+            clip2 = VideoFileClip(filename2)
+
+            main_vid = concatenate_videoclips([main_vid, clip2])
 
 
 if __name__ == '__main__':
