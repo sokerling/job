@@ -10,6 +10,9 @@ class MyWidget(QMainWindow):
         super().__init__()
         uic.loadUi('inputscreen.ui', self)  # Загружаем дизайн
         self.setWindowTitle('VideoEditor')
+        self.label = QLabel(self)
+        self.label.setText("Идёт работа с файлом:")
+        self.label.move(10, 30)
 
         self.MenuBarCreate()
 
@@ -36,10 +39,10 @@ class MyWidget(QMainWindow):
         vid_Rotate = vidMenu.addMenu('&Поворот видео')
         vid_Rotate.addAction('Поворот на 90 градусов по часовой', self.action_clicked)
         vid_Rotate.addAction('Поворот на 90 против по часовой', self.action_clicked)
-        vid_Rotate.addAction('Поворот на 180 градусов по часовой', self.action_clicked)
-        vid_Rotate.addAction('Поворот на 180 против по часовой', self.action_clicked)
+        vid_Rotate.addAction('Поворот на 180 градусов', self.action_clicked)
 
     def file_choose(self):
+        global main_vid, filename
         # Получаем путь к папке
         filename, filetype = QFileDialog.getOpenFileName(self,
                                                          "Выбрать файл",
@@ -47,7 +50,7 @@ class MyWidget(QMainWindow):
                                                          "MP4 Files(*.mp4)")
 
         # Создаём переменную с видеофайлом
-        #main_vid = VideoFileClip(filename)
+        main_vid = VideoFileClip(filename)
         print(filename)
 
     @QtCore.pyqtSlot()
@@ -55,12 +58,22 @@ class MyWidget(QMainWindow):
         if (self.sender()).text() == 'Выход из программы':
             sys.exit(app.exec_())
 
-        elif (self.sender()).text() == 'Сохранить, как...':
+        if (self.sender()).text() == 'Сохранить, как...':
             # Сохраняем конечный видеофайл
             dirlist = QFileDialog.getExistingDirectory(self, "Выбрать папку", ".")
 
-            #main_vid.write_videofile(input())
+
+            main_vid.write_videofile('movie.mp4')
             print(dirlist)
+
+        if (self.sender()).text() == 'Поворот на 90 градусов по часовой':
+            main_vid.rotate(-90)
+
+        if (self.sender()).text() == 'Поворот на 90 против по часовой':
+            main_vid.rotate(90)
+
+        if (self.sender()).text() == 'Поворот на 180 градусов':
+            main_vid.rotate(180)
 
 
 if __name__ == '__main__':
