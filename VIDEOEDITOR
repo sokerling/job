@@ -17,30 +17,41 @@ class MyWidget(QMainWindow):
         self.menuBar = QMenuBar(self)
         self.setMenuBar(self.menuBar)
 
+        # Меню работы с файлом
         fileMenu = QMenu('&Файл', self)
         self.menuBar.addMenu(fileMenu)
 
-        filterMenu = QMenu('&Фильтры', self)
-        self.menuBar.addMenu(filterMenu)
-
-        vidMenu = QMenu('&Видео', self)
-        self.menuBar.addMenu(vidMenu)
-
-        fileMenu.addAction('Открыть', self.action_clicked)
+        fileMenu.addAction('Открыть', self.file_choose)
         fileMenu.addAction('Сохранить, как...', self.action_clicked)
         fileMenu.addAction('Выход из программы', self.action_clicked)
 
+        # Меню работы с фильтрами
+        filterMenu = QMenu('&Фильтры', self)
+        self.menuBar.addMenu(filterMenu)
 
+        # Меню работы с видео
+        vidMenu = QMenu('&Видео', self)
+        self.menuBar.addMenu(vidMenu)
+
+        vid_Rotate = vidMenu.addMenu('&Поворот видео')
+        vid_Rotate.addAction('Поворот на 90 градусов по часовой', self.action_clicked)
+        vid_Rotate.addAction('Поворот на 90 против по часовой', self.action_clicked)
+        vid_Rotate.addAction('Поворот на 180 градусов по часовой', self.action_clicked)
+        vid_Rotate.addAction('Поворот на 180 против по часовой', self.action_clicked)
+
+    def file_choose(self):
+        # Получаем путь к папке
+        openwindow = QtWidgets.QApplication([])
+        filename = QFileDialog.getOpenFileName(self, 'Выбрать видео', '')[0]
+
+        # Создаём переменную с видеофайлом
+        main_vid = VideoFileClip(filename)
+        print(filename)
+    
     @QtCore.pyqtSlot()
     def action_clicked(self):
-        if (self.sender()).text() == 'Открыть':
-            # Получаем путь к папке
-            openwindow = QtWidgets.QApplication([])
-            filename = QFileDialog.getOpenFileName(self, 'Выбрать видео', '')[0]
-
-            # Создаём переменную с видеофайлом
-            main_vid = VideoFileClip(filename)
-            print(filename)
+        if (self.sender()).text() == 'Выход из программы':
+            sys.exit(app.exec_())
 
 
 if __name__ == '__main__':
