@@ -2,25 +2,45 @@ from moviepy.editor import *
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMainWindow
-from PyQt5.QtWidgets import QLabel, QLineEdit, QFileDialog
+from PyQt5.QtWidgets import QLabel, QLineEdit, QFileDialog, QMenu, QMenuBar
 
 
 class MyWidget(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi('inputscreen.ui', self)  # Загружаем дизайн
-        self.setWindowTitle('Videoeditor')
-        self.file_choose_button.clicked.connect(self.file_choose)
+        self.setWindowTitle('VideoEditor')
 
-    def file_choose(self):
-        # Получаем путь к папке
-        openwindow = QtWidgets.QApplication([])
-        filename = QFileDialog.getOpenFileName(self, 'Выбрать видео', '')[0]
+        self.MenuBarCreate()
 
-        # Создаём переменную с видеофайлом
-        main_vid = VideoFileClip(filename)
+    def MenuBarCreate(self):
+        self.menuBar = QMenuBar(self)
+        self.setMenuBar(self.menuBar)
 
-        print(filename)
+        fileMenu = QMenu('&Файл', self)
+        self.menuBar.addMenu(fileMenu)
+
+        filterMenu = QMenu('&Фильтры', self)
+        self.menuBar.addMenu(filterMenu)
+
+        vidMenu = QMenu('&Видео', self)
+        self.menuBar.addMenu(vidMenu)
+
+        fileMenu.addAction('Открыть', self.action_clicked)
+        fileMenu.addAction('Сохранить, как...', self.action_clicked)
+        fileMenu.addAction('Выход из программы', self.action_clicked)
+
+
+    @QtCore.pyqtSlot()
+    def action_clicked(self):
+        if (self.sender()).text() == 'Открыть':
+            # Получаем путь к папке
+            openwindow = QtWidgets.QApplication([])
+            filename = QFileDialog.getOpenFileName(self, 'Выбрать видео', '')[0]
+
+            # Создаём переменную с видеофайлом
+            main_vid = VideoFileClip(filename)
+            print(filename)
 
 
 if __name__ == '__main__':
