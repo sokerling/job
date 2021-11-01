@@ -1,0 +1,35 @@
+from moviepy.editor import *
+import sys
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMainWindow
+from PyQt5.QtWidgets import QLabel, QLineEdit, QFileDialog
+
+
+class MyWidget(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('inputscreen.ui', self)  # Загружаем дизайн
+        self.setWindowTitle('Videoeditor')
+        self.file_choose_button.clicked.connect(self.file_choose)
+
+    def file_choose(self):
+        # Получаем путь к папке
+        openwindow = QtWidgets.QApplication([])
+        filename = QFileDialog.getOpenFileName(self, 'Выбрать видео', '')[0]
+
+        # Создаём переменную с видеофайлом
+        main_vid = VideoFileClip(filename)
+
+        print(filename)
+
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    ex = MyWidget()
+    ex.show()
+    sys.exit(app.exec_())
+
+
+
+# Сохраняем конечный видеофайл
+#main_vid.write_videofile(input())
