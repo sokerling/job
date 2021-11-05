@@ -126,8 +126,8 @@ class VideoEdit(QMainWindow):
         ## Работа со звуком
         if (self.sender()).text() == 'Уменьшить':
             self.volume_Decrease()
-            main_vid = main_vid.volumex('{0:.3}'.format(self.num_crease))
-            self.changes.setText(self.changes.text() + f"\n Громкость видео уменьшена в {self.num_crease} раз")
+            main_vid = main_vid.volumex(round(self.num_crease, 2))
+            self.changes.setText(self.changes.text() + f"\n Громкость видео уменьшена в {round(self.num_crease, 2)} раз")
 
         if (self.sender()).text() == 'Увеличить':
             self.volume_Increase()
@@ -149,6 +149,7 @@ class VideoEdit(QMainWindow):
         ui.pushButton.clicked.connect(returnToMain)
 
     def volume_Decrease(self):
+        self.num_crease = 1
         num, ok_pressed = QInputDialog.getInt(
             self, "Уменьшение громкости", "Во сколько раз вы хотите уменьшить громскость?",
             1, 1, 10, 1)
@@ -156,6 +157,7 @@ class VideoEdit(QMainWindow):
             self.num_crease = 1 / num
 
     def volume_Increase(self):
+        self.num_crease = 1
         num, ok_pressed = QInputDialog.getInt(
             self, "Увеличение громкости", "Во сколько раз вы хотите увеличить громскость?",
             1, 1, 10, 1)
