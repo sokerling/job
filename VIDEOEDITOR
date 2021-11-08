@@ -34,6 +34,8 @@ class VideoEdit(QMainWindow):
         vidMenu = QMenu('&Видео', self)
         self.menu_bar.addMenu(vidMenu)
 
+        vidMenu.addAction('Зеркально отразить', self.action_clicked)
+
         vid_Rotate = vidMenu.addMenu('&Поворот видео')
         vid_Rotate.addAction('Поворот на 90 градусов по часовой', self.action_clicked)
         vid_Rotate.addAction('Поворот на 90 против по часовой', self.action_clicked)
@@ -44,6 +46,10 @@ class VideoEdit(QMainWindow):
         vidAdd.addAction('После', self.action_clicked)
 
         vidMenu.addAction('Обрезать', self.action_clicked)
+
+        speedChange = vidMenu.addMenu('&Изменить скорость видео')
+        speedChange.addAction('Замедлить', self.action_clicked)
+        speedChange.addAction('Ускорить', self.action_clicked)
 
         ## Меню работы со звуком
         sound_Menu = QMenu('&Звук',self)
@@ -68,6 +74,17 @@ class VideoEdit(QMainWindow):
 
         self.with_file_work.setText(f"Идёт работа с видеофайлом: {filename}")
         self.changes.setText('Изменения в вдео:')
+        self.w_and_h.setText('Размеры видеофайла:')
+        self.video_lenght.setText('Длина видеофайла в секундах:')
+        self.fps.setText('Количество кадров в секунду:')
+        self.just_x.setText('X')
+        w, h = main_vid.size
+        self.vid_width.setText(str(w))
+        self.vid_height.setText(str(h))
+        duration = main_vid.duration
+        self.vid_full_lenght.setText(str(duration))
+        frames_ps = main_vid.fps
+        self.vid_fps.setText(str(frames_ps))
 
     @QtCore.pyqtSlot()
     def action_clicked(self):
@@ -79,10 +96,14 @@ class VideoEdit(QMainWindow):
         ## Сохраняем конечный видеофайл
         if (self.sender()).text() == 'Сохранить, как...':
             dirlist = QFileDialog.getExistingDirectory(self, "Выбрать папку", ".")
+            name_of_file, ok_pressed = QInputDialog.getText(
+                self, "Название файла", "Пожалуйтса, укажите конечное название вашего видеофайла")
 
-
-            main_vid.write_videofile('movie.mp4')
-            print(dirlist)
+            if ok_pressed:
+                if name_of_file == '':
+                    main_vid.write_videofile(dirlist + '/' + 'movie' + '.mp4')
+                else:
+                    main_vid.write_videofile(dirlist + '/' + name_of_file + '.mp4')
 
         ## Повороот видео
         if (self.sender()).text() == 'Поворот на 90 градусов по часовой':
@@ -106,6 +127,8 @@ class VideoEdit(QMainWindow):
             clip2 = VideoFileClip(filename2)
 
             main_vid = concatenate_videoclips([clip2, main_vid])
+            duration = main_vid.duration
+            self.vid_full_lenght.setText(str(duration))
             self.changes.setText(self.changes.text() + f"\n Перед видео добавлено {filename2}")
 
         if (self.sender()).text() == 'После':
@@ -116,6 +139,8 @@ class VideoEdit(QMainWindow):
             clip2 = VideoFileClip(filename2)
 
             main_vid = concatenate_videoclips([main_vid, clip2])
+            duration = main_vid.duration
+            self.vid_full_lenght.setText(str(duration))
             self.changes.setText(self.changes.text() + f"\n После видео добавлено {filename2}")
 
         ## Обрезка видео
@@ -146,6 +171,26 @@ class VideoEdit(QMainWindow):
             main_vid = main_vid.set_audio(add_Sound.audio)
             self.changes.setText(self.changes.text() + f"\n В ваше видео добавлен звук из видео {filename_Sound}")
 
+        if (self.sender().text()) == 'Зеркально отразить':
+            main_vid = main_vid.fx(vfx.mirror_x)
+            self.changes.setText(self.changes.text() + f"\n Видео отражено зеркально")
+
+        if (self.sender().text()) == 'Замедлить':
+            self.speed = 0
+            self.changing_Speed()
+            main_vid = main_vid.fx(vfx.speedx, round(self.speed_Changing, 2))
+            self.changes.setText(self.changes.text() + f"\n Ваше видео замедленно в {round(self.speed_Changing, 2)} раз")
+            duration = main_vid.duration
+            self.vid_full_lenght.setText(str(duration))
+
+        if (self.sender().text()) == 'Ускорить':
+            self.speed = 1
+            self.changing_Speed()
+            main_vid = main_vid.fx(vfx.speedx, self.speed_Changing)
+            self.changes.setText(self.changes.text() + f"\n Ваше видео ускоренно в {self.speed_Changing} раз")
+            duration = main_vid.duration
+            self.vid_full_lenght.setText(str(duration))
+
     def openCutChanges(self):
         global widget
         widget = QDialog()
@@ -175,6 +220,20 @@ class VideoEdit(QMainWindow):
             1, 1, 10, 1)
         if ok_pressed:
             self.num_crease = num
+
+    def changing_Speed(self):
+        if self.speed == 0:
+            num, ok_pressed = QInputDialog.getInt(
+                self, "Изменение скорости", "Во сколько раз вы хотите замедлить видео?",
+                1, 1, 5, 1)
+            if ok_pressed:
+                self.speed_Changing = 1 / num
+        if self.speed == 1:
+            num, ok_pressed = QInputDialog.getInt(
+                self, "замедлить видео", "Во сколько раз вы хотите ускорить видео?",
+                1, 1, 5, 1)
+            if ok_pressed:
+                self.speed_Changing = num
 
 
 ## Запуск программы
