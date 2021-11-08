@@ -53,6 +53,8 @@ class VideoEdit(QMainWindow):
         volumeChange.addAction('Уменьшить', self.action_clicked)
         volumeChange.addAction('Увеличить', self.action_clicked)
 
+        sound_Menu.addAction('Изменить звук вашего видео', self.action_clicked)
+
     def file_choose(self):
         global main_vid, filename
         ## Получаем путь к папке
@@ -133,6 +135,16 @@ class VideoEdit(QMainWindow):
             self.volume_Increase()
             main_vid = main_vid.volumex(self.num_crease)
             self.changes.setText(self.changes.text() + f"\n Громкость видео увеличена в {self.num_crease} раз")
+
+        if (self.sender().text()) == 'Изменить звук вашего видео':
+            filename_Sound, filetype = QFileDialog.getOpenFileName(self,
+                                                             "Выбрать файл",
+                                                             ".",
+                                                             "MP4 Files(*.mp4)")
+            add_Sound = VideoFileClip(filename_Sound)
+
+            main_vid = main_vid.set_audio(add_Sound.audio)
+            self.changes.setText(self.changes.text() + f"\n В ваше видео добавлен звук из видео {filename_Sound}")
 
     def openCutChanges(self):
         global widget
