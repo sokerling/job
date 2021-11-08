@@ -198,15 +198,15 @@ class VideoEdit(QMainWindow):
 
         if (self.sender().text()) == 'Затемнить':
             self.light = 0
-            self.light_Changing()
+            self.changing_Light()
             main_vid = main_vid.fx(vfx.colorx, self.light_Changing)
             self.changes.setText(self.changes.text() + f"\n Ваше видео затемненно в {self.light_Changing} раз")
 
         if (self.sender().text()) == 'Осветлить':
             self.light = 1
-            self.light_Changing()
-            main_vid = main_vid.fx(vfx.colorx, self.light_Changing + 1)
-            self.changes.setText(self.changes.text() + f"\n Ваше видео осветленно в {self.light_Changing} раз")
+            self.changing_Light()
+            main_vid = main_vid.fx(vfx.colorx, self.light_Changing)
+            self.changes.setText(self.changes.text() + f"\n Ваше видео осветленно в {self.light_Changing + 1} раз")
 
     def openCutChanges(self):
         global widget
@@ -252,7 +252,7 @@ class VideoEdit(QMainWindow):
             if ok_pressed:
                 self.speed_Changing = num
 
-    def light_Changing(self):
+    def changing_Light(self):
         if self.light == 0:
             num, ok_pressed = QInputDialog.getInt(
                 self, "Изменение яркости", "На сколько процентов вы хотите затемнить видео?",
