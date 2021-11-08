@@ -205,7 +205,7 @@ class VideoEdit(QMainWindow):
         if (self.sender().text()) == 'Осветлить':
             self.light = 1
             self.changing_Light()
-            main_vid = main_vid.fx(vfx.colorx, self.light_Changing)
+            main_vid = main_vid.fx(vfx.colorx, self.light_Changing + 1)
             self.changes.setText(self.changes.text() + f"\n Ваше видео осветленно в {self.light_Changing + 1} раз")
 
     def openCutChanges(self):
