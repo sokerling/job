@@ -30,6 +30,11 @@ class VideoEdit(QMainWindow):
         filterMenu = QMenu('&Фильтры', self)
         self.menu_bar.addMenu(filterMenu)
 
+        lightCorrection = filterMenu.addMenu('&Изменить яркость видео')
+
+        lightCorrection.addAction('Затемнить', self.action_clicked)
+        lightCorrection.addAction('Осветлить', self.action_clicked)
+
         ## Меню работы с видео
         vidMenu = QMenu('&Видео', self)
         self.menu_bar.addMenu(vidMenu)
@@ -191,6 +196,18 @@ class VideoEdit(QMainWindow):
             duration = main_vid.duration
             self.vid_full_lenght.setText(str(duration))
 
+        if (self.sender().text()) == 'Затемнить':
+            self.light = 0
+            self.light_Changing()
+            main_vid = main_vid.fx(vfx.colorx, self.light_Changing)
+            self.changes.setText(self.changes.text() + f"\n Ваше видео затемненно в {self.light_Changing} раз")
+
+        if (self.sender().text()) == 'Осветлить':
+            self.light = 1
+            self.light_Changing()
+            main_vid = main_vid.fx(vfx.colorx, self.light_Changing + 1)
+            self.changes.setText(self.changes.text() + f"\n Ваше видео осветленно в {self.light_Changing} раз")
+
     def openCutChanges(self):
         global widget
         widget = QDialog()
@@ -234,6 +251,20 @@ class VideoEdit(QMainWindow):
                 1, 1, 5, 1)
             if ok_pressed:
                 self.speed_Changing = num
+
+    def light_Changing(self):
+        if self.light == 0:
+            num, ok_pressed = QInputDialog.getInt(
+                self, "Изменение яркости", "На сколько процентов вы хотите затемнить видео?",
+                1, 50, 100, 5)
+            if ok_pressed:
+                self.light_Changing = (num / 100)
+        if self.light == 1:
+            num, ok_pressed = QInputDialog.getInt(
+                self, "Изменение яркости", "На сколько процентов вы хотите осветлить видео?",
+                1, 50, 100, 5)
+            if ok_pressed:
+                self.light_Changing = (num / 100)
 
 
 ## Запуск программы
