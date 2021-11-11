@@ -150,10 +150,10 @@ class VideoEdit(QMainWindow):
 
         ## Обрезка видео
         if (self.sender()).text() == 'Обрезать':
-            global vid_lenght1
-            ##vid_lenght1 = main_vid.duration
-            ##print(self.vid_lenght1)
-            self.openCutChanges()
+            ##global vid_lenght1
+            vid_lenght1 = main_vid.duration
+            print(vid_lenght1)
+            self.openCutChanges(vid_lenght1)
 
         ## Работа со звуком
         if (self.sender()).text() == 'Уменьшить':
@@ -196,31 +196,31 @@ class VideoEdit(QMainWindow):
             duration = main_vid.duration
             self.vid_full_lenght.setText(str(duration))
 
-        if (self.sender().text()) == 'Затемнить':
+        if self.sender().text() == 'Затемнить':
             self.light = 0
             self.changing_Light()
             main_vid = main_vid.fx(vfx.colorx, self.light_Changing)
             self.changes.setText(self.changes.text() + f"\n Ваше видео затемненно в {self.light_Changing} раз")
 
-        if (self.sender().text()) == 'Осветлить':
+        if self.sender().text() == 'Осветлить':
             self.light = 1
             self.changing_Light()
             main_vid = main_vid.fx(vfx.colorx, self.light_Changing + 1)
             self.changes.setText(self.changes.text() + f"\n Ваше видео осветленно в {self.light_Changing + 1} раз")
 
-    def openCutChanges(self):
-        global widget
+    def openCutChanges(self, vid_lenght1):
         widget = QDialog()
         ui = Ui_Dialog()
         ui.setupUi(widget)
         widget.show()
 
-        def returnToMain():
-            widget.close()
+        ui.vid_lenght.setText(str(vid_lenght1))
 
-        ## ui.vid_lenght.setText(vid_lenght1)
+        cut_vid_since = self.cut_since_change.text()
+        cut_vid_for = self.cut_for_change.text()
+        print(cut_vid_since, cut_vid_for)
 
-        ui.pushButton.clicked.connect(returnToMain)
+        ui.pushButton.clicked.connect(lambda: widget.close())
 
     def volume_Decrease(self):
         self.num_crease = 1
