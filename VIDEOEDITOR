@@ -56,6 +56,8 @@ class VideoEdit(QMainWindow):
         speedChange.addAction('Замедлить', self.action_clicked)
         speedChange.addAction('Ускорить', self.action_clicked)
 
+        vidMenu.addAction('Видео задом наперёд', self.action_clicked)
+
         ## Меню работы со звуком
         sound_Menu = QMenu('&Звук',self)
         self.menu_bar.addMenu(sound_Menu)
@@ -66,6 +68,19 @@ class VideoEdit(QMainWindow):
 
         sound_Menu.addAction('Изменить звук вашего видео', self.action_clicked)
 
+        ## Меню работы с картинками
+        slide_Menu = QMenu('&Слайд-шоу', self)
+        self.menu_bar.addMenu(slide_Menu)
+
+        slide_Menu.addAction('Добавить картинку', self.action_clicked)
+        self.skip = 0
+        imageAdd = slide_Menu.addMenu('&Добавить слайдшоу к основному видео')
+        imageAdd.addAction('Перед видео', self.action_clicked)
+        imageAdd.addAction('После видео', self.action_clicked)
+
+        ## Меню работы с текстом
+        vidMenu.addAction('Добавить текст', self.action_clicked)
+
     def file_choose(self):
         global main_vid, filename
         ## Получаем путь к папке
@@ -75,31 +90,34 @@ class VideoEdit(QMainWindow):
                                                          "MP4 Files(*.mp4)")
 
         ## Создаём переменную с видеофайлом
-        main_vid = VideoFileClip(filename)
+        if filename == '':
+            pass
+        else:
+            main_vid = VideoFileClip(filename)
 
-        self.with_file_work.setText(f"Идёт работа с видеофайлом: {filename}")
-        self.changes.setText('Изменения в вдео:')
-        self.w_and_h.setText('Размеры видеофайла:')
-        self.video_lenght.setText('Длина видеофайла в секундах:')
-        self.fps.setText('Количество кадров в секунду:')
-        self.just_x.setText('X')
-        w, h = main_vid.size
-        self.vid_width.setText(str(w))
-        self.vid_height.setText(str(h))
-        duration = main_vid.duration
-        self.vid_full_lenght.setText(str(duration))
-        frames_ps = main_vid.fps
-        self.vid_fps.setText(str(frames_ps))
+            self.with_file_work.setText(f"Идёт работа с видеофайлом: {filename}")
+            self.changes.setText('Изменения в вдео:')
+            self.w_and_h.setText('Размеры видеофайла:')
+            self.video_lenght.setText('Длина видеофайла в секундах:')
+            self.fps.setText('Количество кадров в секунду:')
+            self.just_x.setText('X')
+            w, h = main_vid.size
+            self.vid_width.setText(str(w))
+            self.vid_height.setText(str(h))
+            duration = main_vid.duration
+            self.vid_full_lenght.setText(str(duration))
+            frames_ps = main_vid.fps
+            self.vid_fps.setText(str(frames_ps))
 
     @QtCore.pyqtSlot()
     def action_clicked(self):
         global main_vid
         ## Выход из программы
-        if (self.sender()).text() == 'Выход из программы':
+        if self.sender().text() == 'Выход из программы':
             sys.exit(app.exec_())
 
         ## Сохраняем конечный видеофайл
-        if (self.sender()).text() == 'Сохранить, как...':
+        if self.sender().text() == 'Сохранить, как...':
             dirlist = QFileDialog.getExistingDirectory(self, "Выбрать папку", ".")
             name_of_file, ok_pressed = QInputDialog.getText(
                 self, "Название файла", "Пожалуйтса, укажите конечное название вашего видеофайла")
@@ -111,20 +129,20 @@ class VideoEdit(QMainWindow):
                     main_vid.write_videofile(dirlist + '/' + name_of_file + '.mp4')
 
         ## Повороот видео
-        if (self.sender()).text() == 'Поворот на 90 градусов по часовой':
+        if self.sender().text() == 'Поворот на 90 градусов по часовой':
             main_vid = main_vid.rotate(-90)
             self.changes.setText(self.changes.text() + f"\n Поворот на 90 градусов по часовой")
 
-        if (self.sender()).text() == 'Поворот на 90 против по часовой':
+        if self.sender().text() == 'Поворот на 90 против по часовой':
             main_vid = main_vid.rotate(90)
             self.changes.setText(self.changes.text() + f"\n Поворот на 90 против по часовой")
 
-        if (self.sender()).text() == 'Поворот на 180 градусов':
+        if self.sender().text() == 'Поворот на 180 градусов':
             main_vid = main_vid.rotate(180)
             self.changes.setText(self.changes.text() + f"\n Поворот на 180 градусов")
 
         ## Склеивание видео
-        if (self.sender()).text() == 'Перед':
+        if self.sender().text() == 'Перед':
             filename2, filetype = QFileDialog.getOpenFileName(self,
                                                              "Выбрать файл",
                                                              ".",
@@ -136,7 +154,7 @@ class VideoEdit(QMainWindow):
             self.vid_full_lenght.setText(str(duration))
             self.changes.setText(self.changes.text() + f"\n Перед видео добавлено {filename2}")
 
-        if (self.sender()).text() == 'После':
+        if self.sender().text() == 'После':
             filename2, filetype = QFileDialog.getOpenFileName(self,
                                                              "Выбрать файл",
                                                              ".",
@@ -149,24 +167,24 @@ class VideoEdit(QMainWindow):
             self.changes.setText(self.changes.text() + f"\n После видео добавлено {filename2}")
 
         ## Обрезка видео
-        if (self.sender()).text() == 'Обрезать':
+        if self.sender().text() == 'Обрезать':
             ##global vid_lenght1
             vid_lenght1 = main_vid.duration
             print(vid_lenght1)
             self.openCutChanges(vid_lenght1)
 
         ## Работа со звуком
-        if (self.sender()).text() == 'Уменьшить':
+        if self.sender().text() == 'Уменьшить':
             self.volume_Decrease()
             main_vid = main_vid.volumex(round(self.num_crease, 2))
             self.changes.setText(self.changes.text() + f"\n Громкость видео уменьшена в {round(self.num_crease, 2)} раз")
 
-        if (self.sender()).text() == 'Увеличить':
+        if self.sender().text() == 'Увеличить':
             self.volume_Increase()
             main_vid = main_vid.volumex(self.num_crease)
             self.changes.setText(self.changes.text() + f"\n Громкость видео увеличена в {self.num_crease} раз")
 
-        if (self.sender().text()) == 'Изменить звук вашего видео':
+        if self.sender().text() == 'Изменить звук вашего видео':
             filename_Sound, filetype = QFileDialog.getOpenFileName(self,
                                                              "Выбрать файл",
                                                              ".",
@@ -176,11 +194,11 @@ class VideoEdit(QMainWindow):
             main_vid = main_vid.set_audio(add_Sound.audio)
             self.changes.setText(self.changes.text() + f"\n В ваше видео добавлен звук из видео {filename_Sound}")
 
-        if (self.sender().text()) == 'Зеркально отразить':
+        if self.sender().text() == 'Зеркально отразить':
             main_vid = main_vid.fx(vfx.mirror_x)
             self.changes.setText(self.changes.text() + f"\n Видео отражено зеркально")
 
-        if (self.sender().text()) == 'Замедлить':
+        if self.sender().text() == 'Замедлить':
             self.speed = 0
             self.changing_Speed()
             main_vid = main_vid.fx(vfx.speedx, round(self.speed_Changing, 2))
@@ -188,7 +206,7 @@ class VideoEdit(QMainWindow):
             duration = main_vid.duration
             self.vid_full_lenght.setText(str(duration))
 
-        if (self.sender().text()) == 'Ускорить':
+        if self.sender().text() == 'Ускорить':
             self.speed = 1
             self.changing_Speed()
             main_vid = main_vid.fx(vfx.speedx, self.speed_Changing)
@@ -208,6 +226,50 @@ class VideoEdit(QMainWindow):
             main_vid = main_vid.fx(vfx.colorx, self.light_Changing + 1)
             self.changes.setText(self.changes.text() + f"\n Ваше видео осветленно в {self.light_Changing + 1} раз")
 
+        if self.sender().text() == 'Добавить картинку':
+            global final_image_clip
+            filename_Image, filetype = QFileDialog.getOpenFileName(self,
+                                                                   "Выбрать файл",
+                                                                   ".",
+                                                                   "PNG Files(*.png);;Картинка (.jpg);;Картинка (.jpg);;Все файлы (*)")
+
+            num, ok_pressed = QInputDialog.getInt(
+                self, "Длительность кадра", "Укажите в секундах, сколько будет длиться ваш кадр",
+                1, 1, 100, 2)
+
+            if ok_pressed:
+                if self.skip == 0:
+                    final_image_clip = ImageClip(filename_Image).set_duration(num)
+                    self.skip = 1
+                    self.changes_image.setText(f"В слайдшоу добавлено {filename_Image}, длиною {num} секунд")
+                else:
+                    clip2 = ImageClip(filename_Image).set_duration(num)
+                    final_image_clip = concatenate_videoclips([final_image_clip, clip2], method='compose')
+                    self.changes_image.setText(self.changes_image.text() + f"\n В слайдшоу добавлено {filename_Image}, длиною {num} секунд")
+
+        if self.sender().text() == 'Перед видео':
+            main_vid = concatenate_videoclips([final_image_clip, main_vid])
+            duration = main_vid.duration
+            self.vid_full_lenght.setText(str(duration))
+            self.changes.setText(self.changes.text() + f"\n Перед видео добавлено ваше слайд-шоу")
+
+        if self.sender().text() == 'После видео':
+            main_vid = concatenate_videoclips([main_vid, final_image_clip])
+            duration = main_vid.duration
+            self.vid_full_lenght.setText(str(duration))
+            self.changes.setText(self.changes.text() + f"\n После видео добавлено ваше слайд-шоу")
+
+        #if self.sender().text() == 'Видео задом наперёд':
+            #main_vid = main_vid.fx(vfx.time_mirror)
+            #self.changes.setText(self.changes.text() + f"\n Ваше видео будет воспроизводиться задом наперёд")
+
+        if self.sender().text() == 'Добавить текст':
+            self.get_text_values()
+            txt_clip = TextClip(self.text_of_clip, fontsize=self.size_of_text, color=self.color_of_text)
+            txt_clip = txt_clip.set_position('bottom').set_duration(main_vid.duration)
+            main_vid = CompositeVideoClip([main_vid, txt_clip, ])
+
+
     def openCutChanges(self, vid_lenght1):
         widget = QDialog()
         ui = Ui_Dialog()
@@ -216,11 +278,12 @@ class VideoEdit(QMainWindow):
 
         ui.vid_lenght.setText(str(vid_lenght1))
 
-        cut_vid_since = self.cut_since_change.text()
-        cut_vid_for = self.cut_for_change.text()
-        print(cut_vid_since, cut_vid_for)
+        #cut_vid_since = self.cut_since_change.text()
+        #cut_vid_for = self.cut_for_change.text()
+        #print(cut_vid_since, cut_vid_for)
 
         ui.pushButton.clicked.connect(lambda: widget.close())
+
 
     def volume_Decrease(self):
         self.num_crease = 1
@@ -265,6 +328,27 @@ class VideoEdit(QMainWindow):
                 1, 50, 100, 5)
             if ok_pressed:
                 self.light_Changing = (num / 100)
+
+    def get_text_values(self):
+        text, ok_pressed = QInputDialog.getText(
+            self, "Текст", "Пожалуйтса, введите текст для отображения")
+
+        if ok_pressed:
+            self.text_of_clip = text
+
+            size, ok_pressed = QInputDialog.getInt(
+                self, "Размер шрифта", "Пожалуйста, укажите размер шрифта",
+                50, 1, 200, 2)
+
+            if ok_pressed:
+                self.size_of_text = size
+
+                color, ok_pressed = QInputDialog.getItem(
+                    self, "Цвет шрифта", "Пожалуйста, выберите цвет шрифта",
+                    ("white", "black", "red", "green", "yellow", "blue", "purple", "orange"), 1, False)
+
+                if ok_pressed:
+                    self.color_of_text = color
 
 
 ## Запуск программы
