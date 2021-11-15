@@ -3,7 +3,7 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMainWindow, QInputDialog
 from PyQt5.QtWidgets import QLabel, QLineEdit, QFileDialog, QMenu, QMenuBar, QDialog
-from screen1 import Ui_Dialog
+from second_screen import Ui_Dialog
 
 
 class VideoEdit(QMainWindow):
@@ -35,11 +35,15 @@ class VideoEdit(QMainWindow):
         lightCorrection.addAction('Затемнить', self.action_clicked)
         lightCorrection.addAction('Осветлить', self.action_clicked)
 
+        filterMenu.addAction('Негатив', self.action_clicked)
+
+        filterMenu.addAction('Чёрно-белый', self.action_clicked)
+
         ## Меню работы с видео
         vidMenu = QMenu('&Видео', self)
         self.menu_bar.addMenu(vidMenu)
 
-        vidMenu.addAction('Зеркально отразить', self.action_clicked)
+        #vidMenu.addAction('Зеркально отразить', self.action_clicked)
 
         vid_Rotate = vidMenu.addMenu('&Поворот видео')
         vid_Rotate.addAction('Поворот на 90 градусов по часовой', self.action_clicked)
@@ -56,7 +60,7 @@ class VideoEdit(QMainWindow):
         speedChange.addAction('Замедлить', self.action_clicked)
         speedChange.addAction('Ускорить', self.action_clicked)
 
-        vidMenu.addAction('Видео задом наперёд', self.action_clicked)
+        #vidMenu.addAction('Видео задом наперёд', self.action_clicked)
 
         vid_Resize = vidMenu.addMenu('Изменить размер видео')
 
@@ -85,6 +89,11 @@ class VideoEdit(QMainWindow):
 
         ## Меню работы с текстом
         vidMenu.addAction('Добавить текст', self.action_clicked)
+
+        help_Menu = QMenu('&Help', self)
+        self.menu_bar.addMenu(help_Menu)
+
+        help_Menu.addAction('Открыть пояснение', self.action_clicked)
 
     def file_choose(self):
         global main_vid, filename
@@ -267,8 +276,9 @@ class VideoEdit(QMainWindow):
         if self.sender().text() == 'Добавить текст':
             self.get_text_values()
             txt_clip = TextClip(self.text_of_clip, fontsize=self.size_of_text, color=self.color_of_text)
-            txt_clip = txt_clip.set_position('bottom').set_duration(main_vid.duration)
+            txt_clip = txt_clip.set_position((self.location_of_text_1, self.location_of_text_2)).set_duration(main_vid.duration)
             main_vid = CompositeVideoClip([main_vid, txt_clip, ])
+            self.changes.setText(self.changes.text() + f"\n В ваше видео добавлен текст")
 
         if self.sender().text() == 'Уменьшить размер':
             self.get_resize_values()
@@ -288,32 +298,48 @@ class VideoEdit(QMainWindow):
             self.vid_width.setText(str(w))
             self.vid_height.setText(str(h))
 
+        if self.sender().text() == 'Негатив':
+            main_vid = main_vid.fx(vfx.invert_colors)
+            self.changes.setText(self.changes.text() + f"\n В ваше видео добавлен фильтр негатив")
+
+        if self.sender().text() == 'Чёрно-белый':
+            main_vid = main_vid.fx(vfx.blackwhite)
+            self.changes.setText(self.changes.text() + f"\n В ваше видео добавлен фильтр чёрно-белое")
+
 
         ## Обрезка видео
         if self.sender().text() == 'Обрезать':
-            vid_lenght1 = main_vid.duration
-            cut_vid_since, cut_vid_for = 0, 0
-            self.openCutChanges(vid_lenght1)
-            print(cut_vid_since, cut_vid_for)
+            self.openCutChanges()
+            main_vid = main_vid.subclip(self.cut_since, self.cut_for)
+            self.changes.setText(self.changes.text() + f"\n Ваше видео обрезано")
+            duration = main_vid.duration
+            self.vid_full_lenght.setText(str(duration))
 
-    def openCutChanges(self, vid_lenght1):
-        global cut_vid_for, cut_vid_since
+        if self.sender().text() == 'Открыть пояснение':
+            self.openHelpWindow()
+
+    def openHelpWindow(self):
         widget = QDialog()
         ui = Ui_Dialog()
         ui.setupUi(widget)
         widget.show()
 
-        ui.vid_lenght.setText(str(vid_lenght1))
-
-
         def widj_close():
-            global cut_vid_for, cut_vid_since
-            cut_vid_since = ui.cut_since_change.text()
-            cut_vid_for = ui.cut_for_change.text()
-            print(cut_vid_for, cut_vid_since)
             widget.close()
 
         ui.pushButton.clicked.connect(widj_close)
+
+    def openCutChanges(self):
+        num, ok_pressed = QInputDialog.getInt(
+            self, "Обрезать видео", "С какой секунды вы хотите обрезать видео?",
+            1, 1, 60, 1)
+        if ok_pressed:
+            self.cut_since = num
+            num, ok_pressed = QInputDialog.getInt(
+                self, "Обрезать видео", "По какую секунду вы хотите обрезать видео?",
+                1, 1, 60, 1)
+            if ok_pressed:
+                self.cut_for = num
 
     def volume_Decrease(self):
         self.num_crease = 1
@@ -349,13 +375,13 @@ class VideoEdit(QMainWindow):
         if self.light == 0:
             num, ok_pressed = QInputDialog.getInt(
                 self, "Изменение яркости", "На сколько процентов вы хотите затемнить видео?",
-                1, 50, 100, 5)
+                1, 1, 100, 5)
             if ok_pressed:
                 self.light_Changing = (num / 100)
         if self.light == 1:
             num, ok_pressed = QInputDialog.getInt(
                 self, "Изменение яркости", "На сколько процентов вы хотите осветлить видео?",
-                1, 50, 100, 5)
+                1, 1, 100, 5)
             if ok_pressed:
                 self.light_Changing = (num / 100)
 
@@ -379,6 +405,22 @@ class VideoEdit(QMainWindow):
 
                 if ok_pressed:
                     self.color_of_text = color
+
+                    location_1, ok_pressed = QInputDialog.getItem(
+                        self, "Расположение текста", "Пожалуйста, выберите, где будет располагаться ваш текст по горизонтали",
+                        ("left", "center", "right"), 1, False)
+
+                    if ok_pressed:
+                        self.location_of_text_1 = location_1
+
+                        location_2, ok_pressed = QInputDialog.getItem(
+                            self, "Расположение текста",
+                            "Пожалуйста, выберите, где будет располагаться ваш текст по вертикали",
+                            ("top", "center", "bottom"), 1, False)
+
+                        if ok_pressed:
+                            self.location_of_text_2 = location_2
+
 
     def get_resize_values(self):
         num, ok_pressed = QInputDialog.getInt(
