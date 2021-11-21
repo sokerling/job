@@ -18,7 +18,7 @@ class VideoEdit(QMainWindow):
         self.menu_bar = QMenuBar(self)
         self.setMenuBar(self.menu_bar)
 
-        ## Меню работы с файлом
+        # Меню работы с файлом
         fileMenu = QMenu('&Файл', self)
         self.menu_bar.addMenu(fileMenu)
 
@@ -26,7 +26,7 @@ class VideoEdit(QMainWindow):
         fileMenu.addAction('Сохранить, как...', self.action_clicked)
         fileMenu.addAction('Выход из программы', self.action_clicked)
 
-        ## Меню работы с фильтрами
+        # Меню работы с фильтрами
         filterMenu = QMenu('&Фильтры', self)
         self.menu_bar.addMenu(filterMenu)
 
@@ -39,11 +39,9 @@ class VideoEdit(QMainWindow):
 
         filterMenu.addAction('Чёрно-белый', self.action_clicked)
 
-        ## Меню работы с видео
+        # Меню работы с видео
         vidMenu = QMenu('&Видео', self)
         self.menu_bar.addMenu(vidMenu)
-
-        #vidMenu.addAction('Зеркально отразить', self.action_clicked)
 
         vid_Rotate = vidMenu.addMenu('&Поворот видео')
         vid_Rotate.addAction('Поворот на 90 градусов по часовой', self.action_clicked)
@@ -60,14 +58,14 @@ class VideoEdit(QMainWindow):
         speedChange.addAction('Замедлить', self.action_clicked)
         speedChange.addAction('Ускорить', self.action_clicked)
 
-        #vidMenu.addAction('Видео задом наперёд', self.action_clicked)
-
         vid_Resize = vidMenu.addMenu('Изменить размер видео')
 
         vid_Resize.addAction('Уменьшить размер', self.action_clicked)
         vid_Resize.addAction('Увеличить размер', self.action_clicked)
 
-        ## Меню работы со звуком
+        vidMenu.addAction('Наложить видео с зелёным фоном', self.action_clicked)
+
+        # Меню работы со звуком
         sound_Menu = QMenu('&Звук', self)
         self.menu_bar.addMenu(sound_Menu)
 
@@ -77,7 +75,7 @@ class VideoEdit(QMainWindow):
 
         sound_Menu.addAction('Изменить звук вашего видео', self.action_clicked)
 
-        ## Меню работы с картинками
+        # Меню работы с картинками
         slide_Menu = QMenu('&Слайд-шоу', self)
         self.menu_bar.addMenu(slide_Menu)
 
@@ -87,7 +85,7 @@ class VideoEdit(QMainWindow):
         imageAdd.addAction('Перед видео', self.action_clicked)
         imageAdd.addAction('После видео', self.action_clicked)
 
-        ## Меню работы с текстом
+        # Меню работы с текстом
         vidMenu.addAction('Добавить текст', self.action_clicked)
 
         help_Menu = QMenu('&Help', self)
@@ -97,13 +95,13 @@ class VideoEdit(QMainWindow):
 
     def file_choose(self):
         global main_vid, filename
-        ## Получаем путь к папке
+        # Получаем путь к папке
         filename, filetype = QFileDialog.getOpenFileName(self,
                                                          "Выбрать файл",
                                                          ".",
                                                          "MP4 Files(*.mp4)")
 
-        ## Создаём переменную с видеофайлом
+        # Создаём переменную с видеофайлом
         if filename == '':
             pass
         else:
@@ -126,11 +124,11 @@ class VideoEdit(QMainWindow):
     @QtCore.pyqtSlot()
     def action_clicked(self):
         global main_vid
-        ## Выход из программы
+        # Выход из программы
         if self.sender().text() == 'Выход из программы':
             sys.exit(app.exec_())
 
-        ## Сохраняем конечный видеофайл
+        # Сохраняем конечный видеофайл
         if self.sender().text() == 'Сохранить, как...':
             dirlist = QFileDialog.getExistingDirectory(self, "Выбрать папку", ".")
             name_of_file, ok_pressed = QInputDialog.getText(
@@ -142,7 +140,7 @@ class VideoEdit(QMainWindow):
                 else:
                     main_vid.write_videofile(dirlist + '/' + name_of_file + '.mp4')
 
-        ## Повороот видео
+        # Повороот видео
         if self.sender().text() == 'Поворот на 90 градусов по часовой':
             main_vid = main_vid.rotate(-90)
             self.changes.setText(self.changes.text() + f"\n Поворот на 90 градусов по часовой")
@@ -155,7 +153,7 @@ class VideoEdit(QMainWindow):
             main_vid = main_vid.rotate(180)
             self.changes.setText(self.changes.text() + f"\n Поворот на 180 градусов")
 
-        ## Склеивание видео
+        # Склеивание видео
         if self.sender().text() == 'Перед':
             filename2, filetype = QFileDialog.getOpenFileName(self,
                                                               "Выбрать файл",
@@ -180,7 +178,7 @@ class VideoEdit(QMainWindow):
             self.vid_full_lenght.setText(str(duration))
             self.changes.setText(self.changes.text() + f"\n После видео добавлено {filename2}")
 
-        ## Работа со звуком
+        # Работа со звуком
         if self.sender().text() == 'Уменьшить':
             self.volume_Decrease()
             main_vid = main_vid.volumex(round(self.num_crease, 2))
@@ -269,10 +267,6 @@ class VideoEdit(QMainWindow):
             self.vid_full_lenght.setText(str(duration))
             self.changes.setText(self.changes.text() + f"\n После видео добавлено ваше слайд-шоу")
 
-        # if self.sender().text() == 'Видео задом наперёд':
-        # main_vid = main_vid.fx(vfx.time_mirror)
-        # self.changes.setText(self.changes.text() + f"\n Ваше видео будет воспроизводиться задом наперёд")
-
         if self.sender().text() == 'Добавить текст':
             self.get_text_values()
             txt_clip = TextClip(self.text_of_clip, fontsize=self.size_of_text, color=self.color_of_text)
@@ -307,16 +301,25 @@ class VideoEdit(QMainWindow):
             self.changes.setText(self.changes.text() + f"\n В ваше видео добавлен фильтр чёрно-белое")
 
 
-        ## Обрезка видео
+        # Обрезка видео
         if self.sender().text() == 'Обрезать':
             self.openCutChanges()
             main_vid = main_vid.subclip(self.cut_since, self.cut_for)
             self.changes.setText(self.changes.text() + f"\n Ваше видео обрезано")
             duration = main_vid.duration
-            self.vid_full_lenght.setText(str(duration))
+            self.vid_full_lenght.setText(str(round(duration, 2)))
 
         if self.sender().text() == 'Открыть пояснение':
             self.openHelpWindow()
+
+        if self.sender().text() == 'Наложить видео с зелёным фоном':
+            name_of_greenscreen, filetype = QFileDialog.getOpenFileName(self,
+                                                             "Выбрать файл",
+                                                             ".",
+                                                             "MP4 Files(*.mp4)")
+            clip = VideoFileClip(name_of_greenscreen)
+            masked_clip = clip.fx(vfx.mask_color, color=[0, 255, 8], thr=100, s=5)
+            main_vid = CompositeVideoClip([main_vid, masked_clip])
 
     def openHelpWindow(self):
         widget = QDialog()
@@ -330,12 +333,12 @@ class VideoEdit(QMainWindow):
         ui.pushButton.clicked.connect(widj_close)
 
     def openCutChanges(self):
-        num, ok_pressed = QInputDialog.getInt(
+        num, ok_pressed = QInputDialog.getDouble(
             self, "Обрезать видео", "С какой секунды вы хотите обрезать видео?",
-            1, 1, 60, 1)
+            1, 0, 60, 1)
         if ok_pressed:
             self.cut_since = num
-            num, ok_pressed = QInputDialog.getInt(
+            num, ok_pressed = QInputDialog.getDouble(
                 self, "Обрезать видео", "По какую секунду вы хотите обрезать видео?",
                 1, 1, 60, 1)
             if ok_pressed:
@@ -439,7 +442,7 @@ class VideoEdit(QMainWindow):
             self.resize_of_vid = num
 
 
-## Запуск программы
+# Запуск программы
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = VideoEdit()
