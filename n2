@@ -1,11 +1,17 @@
-total, n, even = 5, int(input()), 6
-if n == 0:
-    print(1)
-    exit(0)
-for j in range(n - 1):
-    if n == 0:
-        pass
-    else:
-        total += even
-        even += 2
-print(total)
+import sqlite3
+
+
+def get_result(squirrels_records):
+    con = sqlite3.connect(squirrels_records)
+
+    cur = con.cursor()
+
+    result = cur.execute("""SELECT height FROM Records
+    WHERE height <= (SELECT weight FROM Records WHERE animal_type = 'human')""").fetchall()
+
+    con.commit()
+
+    con.close()
+    print(result)
+
+get_result("squirrels_records.db")
